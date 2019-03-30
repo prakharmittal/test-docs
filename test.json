@@ -15,6 +15,9 @@
   "tags" : [ {
     "name" : "eSigning Gateway",
     "description" : "The complete eSigning workflow API"
+  }, {
+    "name" : "Webhook",
+    "description" : "Sample Webhook Data"
   } ],
   "schemes" : [ "https" ],
   "paths" : {
@@ -158,6 +161,50 @@
         "security" : [ {
           "X-Auth-Token" : [ ]
         } ]
+      }
+    },
+    "/your/success/webhook" : {
+      "post" : {
+        "tags" : [ "Webhook" ],
+        "summary" : "Success Webhook Data",
+        "description" : "A call is made to the Webhook URL provided by you on every successful eSignature. The webhook should expect application/json data and should be publically accessible.",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "Request Body",
+          "description" : "Sample Data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/WebhookData"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response is expected from your Webhook on every successful call. In case, we do not receive a 200 response, 3 re-attempts are made. First re-attempt is made immediately, Second after 1 hour and the Third after 3 hours."
+          }
+        }
+      }
+    },
+    "/your/error/webhook" : {
+      "post" : {
+        "tags" : [ "Webhook" ],
+        "summary" : "Error Webhook Data",
+        "description" : "A call is made to the Webhook URL provided by you in case of authentication failures, attempt exhaustion and expiry of invitations. The webhook should expect application/json data and should be publically accessible.",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "Request Body",
+          "description" : "Sample Data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ErrorWebhookData"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response is expected from your Webhook on every successful call. In case, we do not receive a 200 response, 3 re-attempts are made. First re-attempt is made immediately, Second after 1 hour and the Third after 3 hours."
+          }
+        }
       }
     }
   },
@@ -552,7 +599,7 @@
         }
       }
     },
-    "Webhook Data" : {
+    "WebhookData" : {
       "type" : "object",
       "properties" : {
         "documentId" : {
@@ -590,7 +637,7 @@
         }
       }
     },
-    "Error Webhook Data" : {
+    "ErrorWebhookData" : {
       "type" : "object",
       "properties" : {
         "documentId" : {
