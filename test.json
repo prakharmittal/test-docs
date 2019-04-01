@@ -8,6 +8,9 @@
       "name" : "Leegality Support",
       "email" : "contact@leegality.com"
     },
+    "x-logo": {
+      "url": "https://raw.githubusercontent.com/prakharmittal/test-docs/master/logo.png"
+    },
     "version" : "2.1"
   },
   "externalDocs" : {
