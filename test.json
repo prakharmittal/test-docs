@@ -9,7 +9,7 @@
       "email" : "contact@leegality.com"
     },
     "x-logo": { 
-      "url": "https://raw.githubusercontent.com/prakharmittal/test-docs/master/logo.png" 
+      "url": "https://raw.githubusercontent.com/prakharmittal/test-docs/master/logo.png"
     },
     "version" : "2.1"
   },
@@ -345,7 +345,7 @@
           },
           "phone" : {
             "type" : "string",
-            "description" : "Valid 10 digit mobile number of the invitee. Either email or phone is required."
+            "description" : "Valid 10 digit mobile number of the invitee."
           },
           "emailNotification" : {
             "type" : "boolean",
@@ -565,7 +565,8 @@
       },
       "AuthenticationType" : {
         "type" : "string",
-        "description" : "This parameter works only with Aadhaar eSign. Accepted values are - OTP, BIO, and both. Use OTP for OTP authentication, BIO for biometric authentication, both to allow the user to choose from OTP and Biometric while signing."
+        "description" : "This parameter works only with Aadhaar eSign. Accepted values are - OTP, BIO. Use OTP for OTP authentication, BIO for biometric authentication or both to allow the user to choose from OTP and Biometric while signing.",
+        "example" : "[\"OTP\",\"BIO\"]"
       },
       "SupportDocument" : {
         "type" : "object",
