@@ -512,6 +512,8 @@
         "properties" : {
           "authTypes" : {
             "type" : "array",
+            "description" : "This parameter works only with Aadhaar eSign. Accepted values are - OTP, BIO. Use OTP for OTP authentication, BIO for biometric authentication or both to allow the user to choose from OTP and Biometric while signing.",
+            "example" : [ "OTP", "BIO" ],
             "items" : {
               "$ref" : "#/components/schemas/AuthenticationType"
             }
@@ -556,9 +558,7 @@
         }
       },
       "AuthenticationType" : {
-        "type" : "string",
-        "description" : "This parameter works only with Aadhaar eSign. Accepted values are - OTP, BIO. Use OTP for OTP authentication, BIO for biometric authentication or both to allow the user to choose from OTP and Biometric while signing.",
-        "example" : "[\"OTP\",\"BIO\"]"
+        "type" : "string"
       },
       "SupportDocument" : {
         "type" : "object",
