@@ -545,14 +545,6 @@
             "type" : "string",
             "description" : "Pass the SHA256 Hash of the PAN Number of the user. If you want to verify the user's PAN as contained in the Digital Signature Certificate issued. This parameter only works in case of DSC. The document will only be generated if both the values match. If the value of PAN is not present, this parameter will be ignored."
           },
-          "allowDraw" : {
-            "type" : "boolean",
-            "description" : "This parameter works only for Virtual Sign. Pass the value as false, if you do not want the user to be able to sign on the trackpad or mobile screen."
-          },
-          "allowChoose" : {
-            "type" : "boolean",
-            "description" : "This parameter works only for Virtual Sign. Pass the value as false, if you do not want the user to be able to choose a signature from the pre-configured fonts available."
-          },
           "id" : {
             "type" : "string",
             "description" : "This parameter works only with Automated Signer. Pass the value of the Automated Virtual Sign ID or Automated Document Signer ID after obtaining the same from your Dashboard."
