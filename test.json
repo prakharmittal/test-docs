@@ -24,7 +24,7 @@
     "name" : "eSigning Gateway",
     "description" : "The complete eSigning workflow API"
   }, {
-    "name" : "Webhook",
+    "name" : "Webhook 2.1",
     "description" : "Sample Webhook Data"
   } ],
   "paths" : {
@@ -209,7 +209,7 @@
     },
     "/your/success/webhook" : {
       "post" : {
-        "tags" : [ "Webhook" ],
+        "tags" : [ "Webhook 2.1" ],
         "summary" : "Success Webhook Data",
         "description" : "A call is made to the Webhook URL provided by you on every successful eSignature. The webhook should expect application/json data and should be publically accessible.",
         "requestBody" : {
@@ -232,7 +232,7 @@
     },
     "/your/error/webhook" : {
       "post" : {
-        "tags" : [ "Webhook" ],
+        "tags" : [ "Webhook 2.1" ],
         "summary" : "Error Webhook Data",
         "description" : "A call is made to the Webhook URL provided by you in case of authentication failures, attempt exhaustion and expiry of invitations. The webhook should expect application/json data and should be publically accessible.",
         "requestBody" : {
@@ -399,13 +399,8 @@
             "type" : "boolean",
             "description" : "Pass true if you want to capture the live photo of the signer before the signature. If you are using our Front-end Mobile SDKs, please ensure that your application has access to the signer's camera."
           },
-          "webhookUrl" : {
-            "type" : "string",
-            "description" : "If provided, we will make POST calls to this URL after successful signing by the signer with the data as descibed in webhookData model below."
-          },
-          "errorWebhookUrl" : {
-            "type" : "string",
-            "description" : "If provided, we will make POST calls to this URL after expiry or failure of the signature for the user as per the data described in errorWebhookdata model below."
+          "webhook" : {
+            "$ref" : "#/components/schemas/Webhook"
           },
           "baseUrl" : {
             "type" : "string",
@@ -448,6 +443,24 @@
           "sealType" : {
             "type" : "string",
             "description" : "You can mandate the user to use an Organisational Seal while signing on behalf of an organisation. The seal will be made based on the signer's orgnisation name- either passed by you or entered by him. Use the following values-\nAUTHORIZED_SIGNATORY_SEAL- Authhorized Signatory Seal DIRECTOR_SEAL- Director Seal CUSTOM- Use this to ask the user to upload a image of the Seal"
+          }
+        }
+      },
+      "Webhook" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "string",
+            "description" : "If provided, we will make POST calls to this URL after successful signing by the signer with the data as descibed in webhookData model below."
+          },
+          "failure" : {
+            "type" : "string",
+            "description" : "If provided, we will make POST calls to this URL after expiry or failure of the signature for the user as per the data described in errorWebhookdata model below."
+          },
+          "version" : {
+            "type" : "number",
+            "description" : "If provided, we will make call to specific version of webhook data. Valid values are '2.1'.",
+            "default" : 2.1
           }
         }
       },
@@ -547,10 +560,6 @@
           "verifyTitle" : {
             "type" : "string",
             "description" : "Pass the last 4 digits of the UID No. if you want to verify the user's identity as contained in the Digital Signature Certificate. This paramater only works with Aadhaar eSign. The document will only be generated if both the values match. In case, the value is not present in the certificate, this parameter will be ignored."
-          },
-          "verifyPan" : {
-            "type" : "string",
-            "description" : "Pass the SHA256 Hash of the PAN Number of the user. If you want to verify the user's PAN as contained in the Digital Signature Certificate issued. This parameter only works in case of DSC. The document will only be generated if both the values match. If the value of PAN is not present, this parameter will be ignored."
           },
           "id" : {
             "type" : "string",
@@ -812,7 +821,7 @@
           },
           "uid" : {
             "type" : "string",
-            "description" : "SHA256 Hash of the PAN of the signer as contained in the Digital Signature Certificate issued after Aadhaar authentication. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
+            "description" : "UIDToken of the signer as contained in the Digital Signature Certificate issued after Aadhaar authentication. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
           }
         }
       },
@@ -978,13 +987,8 @@
             "type" : "boolean",
             "description" : "Pass true if you want to capture the live photo of the invitee before the signature. If you are using our Front-end Mobile SDKs, please ensure that your application has access to the signer's camera."
           },
-          "webhookUrl" : {
-            "type" : "string",
-            "description" : "If provided, we will make POST calls to this URL after every successful signing with the data as descibed in webhookData model below."
-          },
-          "errorWebhookUrl" : {
-            "type" : "string",
-            "description" : "If provided, we will make POST calls to this URL after expiry/rejection of the transaction as per the data described in errorWebhookdata model below."
+          "webhook" : {
+            "$ref" : "#/components/schemas/Webhook"
           },
           "baseUrl" : {
             "type" : "string",
