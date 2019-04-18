@@ -18,7 +18,7 @@
     "url" : "https://leegality.com"
   },
   "servers" : [ {
-    "url" : "https://sandbox.leegality.com/api/2.1"
+    "url" : "https://sandbox.leegality.com/api/v2.1"
   } ],
   "tags" : [ {
     "name" : "eSigning Gateway",
@@ -1058,7 +1058,7 @@
             "type" : "string",
             "description" : "Internal Reference Number."
           },
-          "requests" : {
+          "invitations" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Request"
