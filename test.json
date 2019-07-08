@@ -362,6 +362,10 @@
             "description" : "Pass 'true' if you want to send the eSigning invitation and reminder notifications to be sent to the invitee's phone. Completion and signed notifications will be sent by default to all signers.",
             "default" : false
           },
+          "expiryTime" : {
+            "type" : "integer",
+            "description" : "Pass the value of date in long format to set the absolute value of date & time for the expiratoin of invitation. "
+          },
           "appearances" : {
             "type" : "array",
             "items" : {
@@ -949,6 +953,10 @@
             "type" : "boolean",
             "description" : "Pass 'true' if you want to send the eSigning invitation and other notifications to the invitee's phone.",
             "default" : false
+          },
+          "expiryTime" : {
+            "type" : "integer",
+            "description" : "Pass the value of date in long format to set the absolute value of date & time for the expiratoin of invitation."
           },
           "appearances" : {
             "type" : "array",
