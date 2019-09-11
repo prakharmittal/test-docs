@@ -1259,6 +1259,10 @@
       "ListApiResponse_data" : {
         "type" : "object",
         "properties" : {
+          "count" : {
+            "type" : "integer",
+            "description" : "Count of total number of available documents."
+          },
           "documents" : {
             "type" : "array",
             "items" : {
