@@ -170,6 +170,16 @@
             "type" : "string"
           }
         }, {
+          "name" : "status",
+          "in" : "query",
+          "description" : "If you want to add filter for status of document you can use this parameter. Possible values are DRAFT, SENT, RECEIVED, SIGNED, COMPLETED, EXPIRED.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "max",
           "in" : "query",
           "description" : "This parameter can be used to set the maximum number of records you want to receive in response. Default value is 20 and maximum possible value is 40.",
@@ -197,6 +207,39 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ListApiResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "X-Auth-Token" : [ ]
+        } ]
+      }
+    },
+    "/sign/request/reactivate" : {
+      "post" : {
+        "tags" : [ "eSigning Gateway" ],
+        "summary" : "Use this API to reactivate expired documents",
+        "description" : "You can use this API to reactivate expired documents within 30 days of expiry. Please note that Stamped Documents cannot be reactivated using this API. ",
+        "requestBody" : {
+          "description" : "Send the Auth Token (generated from the Settings Tab of your Dashbaord) in the Header with key 'X-Auth-Token'",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReactivateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Default Response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReactivateApiResponse"
                 }
               }
             }
@@ -333,6 +376,23 @@
             "type" : "boolean",
             "description" : "Pass 'true' if you want to allow user to fill the template fields before signing the document.",
             "default" : false
+          }
+        }
+      },
+      "ReactivateRequest" : {
+        "required" : [ "documentId" ],
+        "type" : "object",
+        "properties" : {
+          "documentId" : {
+            "type" : "string",
+            "description" : "Document ID which need to be reactivated."
+          },
+          "expiryDays" : {
+            "maximum" : 30,
+            "minimum" : -1,
+            "type" : "integer",
+            "description" : "Can be used to define the new timeout period after which an uncompleted transaction gets cancelled and reversed. -1 is for 45 minutes, 0 means same day (11:59 PM) , 1 stands for next day , 2 stands for 2 days and so on.",
+            "default" : 10
           }
         }
       },
@@ -605,6 +665,24 @@
           }
         }
       },
+      "ReactivateApiResponse" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "integer",
+            "description" : "if success then 1, else 0."
+          },
+          "messages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Message"
+            }
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/ReactivateApiResponse_data"
+          }
+        }
+      },
       "DetailsApiResponse" : {
         "type" : "object",
         "properties" : {
@@ -792,6 +870,51 @@
           }
         }
       },
+      "ReactivateResponseInvitation" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the invitee."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Email of the invitee."
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Phone Number of the invitee."
+          },
+          "signUrl" : {
+            "type" : "string",
+            "description" : "User specfic URL unique to the request."
+          },
+          "active" : {
+            "type" : "boolean",
+            "description" : "Status of the URL."
+          },
+          "signed" : {
+            "type" : "boolean",
+            "description" : "Request eSigning status."
+          },
+          "rejected" : {
+            "type" : "boolean",
+            "description" : "Request rejection status."
+          },
+          "expired" : {
+            "type" : "boolean",
+            "description" : "Request expiration status."
+          },
+          "expiryDate" : {
+            "type" : "string",
+            "description" : "Request expiration date. Format (dd-MM-yyyy HH:mm:ss)"
+          },
+          "signType" : {
+            "type" : "string",
+            "description" : "This parameter will be there only for Webhook when the document has been signed. Possible values are- AADHAAR, VIRTUAL_SIGN, DSC, DOC_SIGNER, AUTOMATED_SIGN"
+          }
+        }
+      },
       "Signer" : {
         "type" : "object",
         "properties" : {
@@ -899,7 +1022,7 @@
           },
           "status" : {
             "type" : "string",
-            "description" : "Document Status. Possible values- DRAFT, SENT, COMPLETED, EXPIRED."
+            "description" : "Document Status. Possible values- DRAFT, SENT, RECEIVED, SIGNED, COMPLETED, EXPIRED."
           }
         }
       },
@@ -1070,6 +1193,25 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Request"
+            }
+          }
+        }
+      },
+      "ReactivateApiResponse_data" : {
+        "type" : "object",
+        "properties" : {
+          "documentId" : {
+            "type" : "string",
+            "description" : "documentId is a unique Leegality ID created for every eSigning request."
+          },
+          "irn" : {
+            "type" : "string",
+            "description" : "Internal Reference Number."
+          },
+          "invitations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReactivateResponseInvitation"
             }
           }
         }
