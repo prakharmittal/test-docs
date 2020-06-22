@@ -2,14 +2,11 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "Leegality Documentation Gateway",
-    "description" : "Welcome to the reference for the Leegality REST API!\n\nYou can use our API for creating, editing and deleting Signing invitations; for fetching Documents, Audit Trails and other details for existing invitations; and for searching documents based on your custom query.\n\nThe API is based on REST principles, and is a JSON-backed interface.\n## Integration Flow\nIn terms of the flow-\n\n1. The first step is to create a Sign Invitation by making a POST call to the Create API from your back-end server.      \n\n    a. One Sign Invitation can be used to get a single PDF file eSigned.\n\n    b. You can add any number of signers to an invitation. A signer is called an invitee. By default, a signer order is assigned to the request as per which the invitations of subsequent invitees are only activated on successful eSigning by the previous invitees. You can also deactivate Signing order if your use case so requires.\n\n    c. You need to mandatorily pass the Name, email and/or phone number of the invitee to create an invitation for the invitee.\n\n    d.  You also need to pass the PDF file to be signed in Base64 format, or pass a Template ID along with the Template Key Values after obtaining the same from your Dashboard.\n\n    e. You can configure the signature type and other configurations for every invitee while create the invitation.\n\n    f. In case you want to use a Stamp Paper for a document, you need to pass the relevant Stamp Series ID after obtaining the same from your Dashboard. Please note that you need to pre-purchase a particular number of Stamps from your Dashboard to be able to use this functionality.\n\n2. In response to a successful call in the previous step, you will receive a Document ID and Signing URL in reponse.\n\n    Signing URL is a unique user-specific URL created for every request. The user can sign the document from this URL. You have various ways of sending the user to this URL to eSign the document.    \n\n    a. You can use our Front-end Web and Mobile SDKs to open the URL from within your application.\n\n    b. You can redirect the user to the URL and have him redirected back to the redirection URL set by you on completion or error.\n\n    c. You can set that the URLs created be automatically sent to their email/phone to complete the process outside your application.\n3. On successful signing, a notification with the updated document is sent to the Success Webhook set by you for every particular invitee. In case of error, the notification is sent to a separate Error Webhook provided by you.\n\n    Alternatively, you can also make a GET call to the Details API with the relvant Document ID to check the status of the invitation and/or to fetch the document.    \n\n    a. Once a document is successfully signed by all assigned invitees, it is considered as completed and an audit trail is generated for the particular document. The Audit Trail is sent to the success Webhook on successful signing by the last invitee, and can also alternatively be fetched by calling the Details API once the document has been completed.    \n\n    b. Completed documents are also saved in your Dashboard by default. By enforcing the Delete on Complete functionality from the Dashboard or while create the Signing Request , you can program the documents to automatically get deleted from your Dashboard after 7 days of completion.    \n\n    c.  A URL of the signed document is also sent to all the signers by default for them to view, download or delete the signed document. In case, Delete on Complete functionality is turned on, the URL automatically expires after 7 days of completion unless express saved by the user in his Leegality Account.\n    \n## Account Authentication\n1. You need to obtain an “Auth Token” from the API Settings Tab from your Leegality dashboard to be able to interact with our API.\n2. You can also optionally whitelist the IPs from where you want to interact with our APIs. The same can be done from the API Settings Tab as well. It is highly recommended that you do so before going live.\n3. To verify Webhook calls, you can verify the value of the MAC key in Webhook calls. The value of mac is calculated by applying HMAC-SHA1 algorithm on documentId with your Private Salt provided in your API Settings Tab. You can use it to ensure that the calls are coming from our servers.\n## Types of eSign\n1. Essential Plan customers can use Aadhaar eSign (OTP and Biometric), VirtualSign and DSC.\n2. Business and Corporate Plan customers in addition can also use Document Signer Certificate and Automated Signer using Virtual Sign or Document Signer Certificate.\n\n   ### Aadhaar eSign\n   \n    Aadhaar eSign is an Aadhaar authentication based digital signature which can be carried out using the Aadhaar OTP or Aadhaar Biometric verification method. For Aadhaar biometric, you need to procure a Aadhaar registered Biometric Device. The same can be either used from a Windows PC or a Android Device (using our Android Biometric SDK)\n    \n   ### Virtual Sign \n    \n    Virtual Sign is an Mobile/Email OTP based authentication for approval of a document.\n\n   ### DSC \n   \n    DSC is a USB-dongle based technique of digitally signing a document. The signer needs to install Leegality's USB Signing Utility in their PC and need to possess a USB Dongle with a valid Digital Signature Certificate issued by a Certifying Authority.\n\n   ### Document Signer Certificate \n   \n    Document Signer Certificate is a certificate issued to an Organisation for server based signing of documents. To use the same, you need to place a validly issued Document Signer Certificate on your server along with Leegality's Document Signer Utility, and then configure the same from your Dashboard.\n    \n   ### Automated Signer \n   \n    Automated Signing can be carried out either using a Document Signer Certificate or a Virtual Signature pre-configured with any user in your organisational account with Leegality.\n\n## Branding\n  \n1. You can upload your Organisational Logo under ‘Branding Logo’ in your Settings Page to replace the Leegality Default Logo on all signing pages.\n2. You can update your organisation’s name under ‘Branding Name’ in your Settings Page to be used in email and phone communication to your users.\n3. Corporate and Business users can also use a custom sub-domain and custom color for their Organisation.\n## Templates\nYou can create a Template from your Dashboard from the in-built Word Processor, setup custom fields and then use the same to automically generate a PDF file for eSigning.You can obtain a Template ID and sample JSON with the Field Keys to use while create an eSigning Request.\n\n## Stamps\nIn case you want to use Stamp Papers for your Documents, you need to purchase the desired number of Stamp Papers for the desired State from your Dashboard. Once a request is placed, you can obtain the Stamp Series ID and pass the same while create the Signing Request. We will automatically use the latest available Stamp Paper from the Series and merge the same with your Document.\n## Expiry\nEvery signing Request has an expiry period within which the document must be signed. If the document is not signed by the invitees within the expiry period, the invitation is cancelled and the transaction is reversed. If the invitation is signed by one invitee before the expiry period but has more pending invitations even after the expiry period, the invitaion remains in Sent state and need to be manually activated again- either from the Dashboard or calling the edit API. Error Webhooks are called on expiry of every invitation.\n## Wallet usage\nOn successful request creation, the respective transaction charge is reserved from your Wallet. Once the signature is actually carried out the reserved balance is used. If the invitation expires, the balance reserved for the expired invitations is moved back. In case of a Stamped document, the Stamp Paper is reversed in case no invitee signed the document. If even a single invitee successfully signed the document, the Stamp Paper cannot be reused.\n## Updates and Notifications\nYou can subscribe to the receive updates on the changes made to this API reference from your Notifications Tab in your Production Dashboard.\nFor more details, access our FAQs page.\n## Resources\n\n  Web SDK (Front-end) - https://gitlab.leegality.com/leegality-public/web-sdk/tree/v5\n\n  Android SDK (Front-end) - https://gitlab.leegality.com/leegality-public/android-sdk/tree/v4.1\n\n  Android Biometric SDK (APK file for Front-end Integration) - https://gitlab.leegality.com/leegality-public/leegality-helper \n\n  iOS SDK (Front end) - https://gitlab.leegality.com/leegality-public/ios-sdk \n\n  Document Signer Server Utility (Backend) - https://gitlab.leegality.com/leegality-public/docsigner \n\n  USB Dongle Utility (Windows and Mac Desktop Utility) - https://gitlab.leegality.com/leegality-public/dsc-utility\n\n  Sandbox Dashboard - https://sandbox.leegality.com \n\n  Sandbox Base URL - https://sandbox.leegality.com/api/v2.1 \n\n  Production Dashboard - https://app.leegality.com \n\n  Production Base URL - https://app.leegality.com/api/v2.1",
+    "description" : "Welcome to the reference for the Leegality REST API!\n\nYou can use our API for creating, editing and deleting Signing invitations; for fetching Documents, Audit Trails and other details for existing invitations; and for searching documents based on your custom query.\n\nThe API is based on REST principles, and is a JSON-backed interface.\n## Integration Flow\nIn terms of the flow-\n\n1. The first step is to create a Sign Invitation by making a POST call to the Create API from your back-end server.      \n\n    a. One Sign Invitation can be used to get a single PDF file eSigned.\n\n    b. You can add any number of signers to an invitation. A signer is called an invitee. By default, a signer order is assigned to the request as per which the invitations of subsequent invitees are only activated on successful eSigning by the previous invitees. You can also deactivate Signing order if your use case so requires.\n\n    c. You need to mandatorily pass the Name, email and/or phone number of the invitee to create an invitation for the invitee.\n\n    d.  You also need to pass the PDF file to be signed in Base64 format, or pass a Template ID along with the Template Key Values after obtaining the same from your Dashboard.\n\n    e. You can configure the signature type and other configurations for every invitee while create the invitation.\n\n    f. In case you want to use a Stamp Paper for a document, you need to pass the relevant Stamp Series ID after obtaining the same from your Dashboard. Please note that you need to pre-purchase a particular number of Stamps from your Dashboard to be able to use this functionality.\n\n2. In response to a successful call in the previous step, you will receive a Document ID and Signing URL in reponse.\n\n    Signing URL is a unique user-specific URL created for every request. The user can sign the document from this URL. You have various ways of sending the user to this URL to eSign the document.    \n\n    a. You can use our Front-end Web and Mobile SDKs to open the URL from within your application.\n\n    b. You can redirect the user to the URL and have him redirected back to the redirection URL set by you on completion or error.\n\n    c. You can set that the URLs created be automatically sent to their email/phone to complete the process outside your application.\n3. On successful signing, a notification with the updated document is sent to the Success Webhook set by you for every particular invitee. In case of error, the notification is sent to a separate Error Webhook provided by you.\n\n    Alternatively, you can also make a GET call to the Details API with the relvant Document ID to check the status of the invitation and/or to fetch the document.    \n\n    a. Once a document is successfully signed by all assigned invitees, it is considered as completed and an audit trail is generated for the particular document. The Audit Trail is sent to the success Webhook on successful signing by the last invitee, and can also alternatively be fetched by calling the Details API once the document has been completed.    \n\n    b. Completed documents are also saved in your Dashboard by default. By enforcing the Delete on Complete functionality from the Dashboard or while create the Signing Request , you can program the documents to automatically get deleted from your Dashboard after 7 days of completion.    \n\n    c.  A URL of the signed document is also sent to all the signers by default for them to view, download or delete the signed document. In case, Delete on Complete functionality is turned on, the URL automatically expires after 7 days of completion unless express saved by the user in his Leegality Account.\n    \n## Account Authentication\n1. You need to obtain an “Auth Token” from the API Settings Tab from your Leegality dashboard to be able to interact with our API.\n2. You can also optionally whitelist the IPs from where you want to interact with our APIs. The same can be done from the API Settings Tab as well. It is highly recommended that you do so before going live.\n3. To verify Webhook calls, you can verify the value of the MAC key in Webhook calls. The value of mac is calculated by applying HMAC-SHA1 algorithm on documentId with your Private Salt provided in your API Settings Tab. You can use it to ensure that the calls are coming from our servers.\n## Types of eSign\n1. Essential Plan customers can use Aadhaar eSign (OTP and Biometric), VirtualSign and DSC.\n2. Business and Corporate Plan customers in addition can also use Document Signer Certificate and Automated Signer using Virtual Sign or Document Signer Certificate.\n\n   ### Aadhaar eSign\n   \n    Aadhaar eSign is an Aadhaar authentication based digital signature which can be carried out using the Aadhaar OTP or Aadhaar Biometric verification method. For Aadhaar biometric, you need to procure a Aadhaar registered Biometric Device. The same can be either used from a Windows PC or a Android Device (using our Android Biometric SDK)\n    \n   ### Virtual Sign \n    \n    Virtual Sign is an Mobile/Email OTP based authentication for approval of a document.\n\n   ### DSC \n   \n    DSC is a USB-dongle based technique of digitally signing a document. The signer needs to install Leegality's USB Signing Utility in their PC and need to possess a USB Dongle with a valid Digital Signature Certificate issued by a Certifying Authority.\n\n   ### Document Signer Certificate \n   \n    Document Signer Certificate is a certificate issued to an Organisation for server based signing of documents. To use the same, you need to place a validly issued Document Signer Certificate on your server along with Leegality's Document Signer Utility, and then configure the same from your Dashboard.\n    \n   ### Automated Signer \n   \n    Automated Signing can be carried out either using a Document Signer Certificate or a Virtual Signature pre-configured with any user in your organisational account with Leegality.\n\n## Branding\n  \n1. You can upload your Organisational Logo under ‘Branding Logo’ in your Settings Page to replace the Leegality Default Logo on all signing pages.\n2. You can update your organisation’s name under ‘Branding Name’ in your Settings Page to be used in email and phone communication to your users.\n3. Corporate and Business users can also use a custom sub-domain and custom color for their Organisation.\n## Templates\nYou can create a Template from your Dashboard from the in-built Word Processor, setup custom fields and then use the same to automically generate a PDF file for eSigning.You can obtain a Template ID and sample JSON with the Field Keys to use while create an eSigning Request.\n\n## Stamps\nIn case you want to use Stamp Papers for your Documents, you need to purchase the desired number of Stamp Papers for the desired State from your Dashboard. Once a request is placed, you can obtain the Stamp Series ID and pass the same while create the Signing Request. We will automatically use the latest available Stamp Paper from the Series and merge the same with your Document.\n## Expiry\nEvery signing Request has an expiry period within which the document must be signed. If the document is not signed by the invitees within the expiry period, the invitation is cancelled and the transaction is reversed. If the invitation is signed by one invitee before the expiry period but has more pending invitations even after the expiry period, the invitaion remains in Sent state and need to be manually activated again- either from the Dashboard or calling the edit API. Error Webhooks are called on expiry of every invitation.\n## Wallet usage\nOn successful request creation, the respective transaction charge is reserved from your Wallet. Once the signature is actually carried out the reserved balance is used. If the invitation expires, the balance reserved for the expired invitations is moved back. In case of a Stamped document, the Stamp Paper is reversed in case no invitee signed the document. If even a single invitee successfully signed the document, the Stamp Paper cannot be reused.\n## Updates and Notifications\nYou can subscribe to the receive updates on the changes made to this API reference from your Notifications Tab in your Production Dashboard.\nFor more details, access our FAQs page.\n## Resources\n\n  Web SDK (Front-end) - https://gitlab.leegality.com/leegality-public/web-sdk/tree/v5\n\n  Android SDK (Front-end) - https://gitlab.leegality.com/leegality-public/android-sdk/tree/v4\n\n  Android Biometric SDK (APK file for Front-end Integration) - https://gitlab.leegality.com/leegality-public/leegality-helper \n\n  iOS SDK (Front end) - https://gitlab.leegality.com/leegality-public/ios-sdk \n\n  Document Signer Server Utility (Backend) - https://gitlab.leegality.com/leegality-public/docsigner \n\n  USB Dongle Utility (Windows and Mac Desktop Utility) - https://gitlab.leegality.com/leegality-public/dsc-utility\n\n  Sandbox Dashboard - https://sandbox.leegality.com \n\n  Sandbox Base URL - https://sandbox.leegality.com/api/v2.1 \n\n  Production Dashboard - https://app.leegality.com \n\n  Production Base URL - https://app.leegality.com/api/v2.1",
     "termsOfService" : "https://leegality.com/tnc.html",
     "contact" : {
       "name" : "Leegality Support",
       "email" : "contact@leegality.com"
-    },
-    "x-logo": { 
-      "url": "https://raw.githubusercontent.com/prakharmittal/test-docs/master/logo.png"
     },
     "version" : "2.1"
   },
@@ -25,7 +22,13 @@
     "description" : "The complete eSigning workflow API"
   }, {
     "name" : "Webhook 2.1",
-    "description" : "Sample Webhook Data"
+    "description" : "Sample Webhook Data for v2.1"
+  }, {
+    "name" : "Webhook 2.2",
+    "description" : "Sample Webhook Data for v2.2"
+  }, {
+    "name" : "Webhook 2.3",
+    "description" : "Sample Webhook Data for v2.3"
   } ],
   "paths" : {
     "/sign/request" : {
@@ -250,7 +253,40 @@
         } ]
       }
     },
-    "/your/success/webhook" : {
+    "/api/v2.1/organization/invitation" : {
+      "post" : {
+        "tags" : [ "eSigning Gateway" ],
+        "summary" : "Use this API to add user to Organisation",
+        "description" : "You can use this API in order to add a user to an organisation with different roles. ",
+        "requestBody" : {
+          "description" : "Send the Auth Token (generated from the Settings Tab of your Dashbaord) in the Header with key 'X-Auth-Token'",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserAdditionAPI"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Default Response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserAdditionAPIResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "X-Auth-Token" : [ ]
+        } ]
+      }
+    },
+    "/your/success/v2.1/webhook" : {
       "post" : {
         "tags" : [ "Webhook 2.1" ],
         "summary" : "Success Webhook Data",
@@ -273,7 +309,53 @@
         }
       }
     },
-    "/your/error/webhook" : {
+    "/your/success/v2.2/webhook" : {
+      "post" : {
+        "tags" : [ "Webhook 2.2" ],
+        "summary" : "Success Webhook Data",
+        "description" : "A call is made to the Webhook URL provided by you on every successful eSignature. The webhook should expect application/json data and should be publically accessible.",
+        "requestBody" : {
+          "description" : "Sample Data",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WebhookDatav2.2"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200 response is expected from your Webhook on every successful call. In case, we do not receive a 200 response, 3 re-attempts are made. First re-attempt is made immediately, Second after 1 hour and the Third after 3 hours."
+          }
+        }
+      }
+    },
+    "/your/success/v2.3/webhook" : {
+      "post" : {
+        "tags" : [ "Webhook 2.3" ],
+        "summary" : "Success Webhook Data",
+        "description" : "A call is made to the Webhook URL provided by you on every successful eSignature. The webhook should expect application/json data and should be publically accessible.",
+        "requestBody" : {
+          "description" : "Sample Data",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/WebhookDatav2.3"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200 response is expected from your Webhook on every successful call. In case, we do not receive a 200 response, 3 re-attempts are made. First re-attempt is made immediately, Second after 1 hour and the Third after 3 hours."
+          }
+        }
+      }
+    },
+    "/your/error/v2.1/webhook" : {
       "post" : {
         "tags" : [ "Webhook 2.1" ],
         "summary" : "Error Webhook Data",
@@ -284,6 +366,52 @@
             "application/json" : {
               "schema" : {
                 "$ref" : "#/components/schemas/ErrorWebhookData"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200 response is expected from your Webhook on every successful call. In case, we do not receive a 200 response, 3 re-attempts are made. First re-attempt is made immediately, Second after 1 hour and the Third after 3 hours."
+          }
+        }
+      }
+    },
+    "/your/error/v2.2/webhook" : {
+      "post" : {
+        "tags" : [ "Webhook 2.2" ],
+        "summary" : "Error Webhook Data",
+        "description" : "A call is made to the Webhook URL provided by you in case of authentication failures, attempt exhaustion and expiry of invitations. The webhook should expect application/json data and should be publically accessible.",
+        "requestBody" : {
+          "description" : "Sample Data",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ErrorWebhookData"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200 response is expected from your Webhook on every successful call. In case, we do not receive a 200 response, 3 re-attempts are made. First re-attempt is made immediately, Second after 1 hour and the Third after 3 hours."
+          }
+        }
+      }
+    },
+    "/your/error/v2.3/webhook" : {
+      "post" : {
+        "tags" : [ "Webhook 2.3" ],
+        "summary" : "Error Webhook Data",
+        "description" : "A call is made to the Webhook URL provided by you in case of authentication failures, attempt exhaustion and expiry of invitations. The webhook should expect application/json data and should be publically accessible.",
+        "requestBody" : {
+          "description" : "Sample Data",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ErrorWebhookDatav2.3"
               }
             }
           },
@@ -369,6 +497,16 @@
             "type" : "string",
             "description" : "Provide the ID of the Template from your Leegality Dashboard if you are using a Template to generate a document. Either templateId or file is required."
           },
+          "fileUrl" : {
+            "type" : "string",
+            "description" : "The URL should be a GET API and the expected response code should be 200. The API response should be the stream of the PDF file."
+          },
+          "headers" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Headers"
+            }
+          },
           "fields" : {
             "description" : "To be used if you are using a Template. Pass the values of the fields of the Template based on the sample JSON provided in your Dashboard for your Template. You can download the same from the Download Form Fields Button from your Template Editor."
           },
@@ -397,7 +535,7 @@
         }
       },
       "Invitee" : {
-        "required" : [ "email", "name", "phone", "signatures" ],
+        "required" : [ "email", "name", "phone" ],
         "type" : "object",
         "properties" : {
           "name" : {
@@ -455,9 +593,14 @@
             "type" : "boolean",
             "description" : "Pass true if you want the user to go through an OTP authentication before being able to access the document both before and after signing."
           },
+          "sendDocumentRawUrl" : {
+            "type" : "boolean",
+            "description" : "Pass true if you want the user to receive a Raw Document URL along with the invite email.",
+            "default" : false
+          },
           "captureLocation" : {
             "type" : "boolean",
-            "description" : "Pass true if you want to capture the GPS coordinates of the signer. If you are using our Front-end Mobile SDKs, please ensure that you own Application has the ability to access signer's GPS location."
+            "description" : "Pass true if you want to capture the GPS coordinates of the signer. If you are using our Front-end Mobile SDKs, please ensure that your own Application has the ability to access signer's GPS location."
           },
           "capturePhoto" : {
             "type" : "boolean",
@@ -478,11 +621,11 @@
             "maximum" : 10,
             "minimum" : 0,
             "type" : "integer",
-            "description" : "Use this parameter to define the number of re-attempts you want the user to take in case of aadhaar eSign failure in authenticating Aadhaar Number. This field is not application for any other modes of eSign."
+            "description" : "Use this parameter to define the number of re-attempts you want the user to take in case of aadhaar eSign failure in authenticating Aadhaar Number. This field is not applicable for any other modes of eSign."
           },
           "customConsent" : {
             "type" : "string",
-            "description" : "You can pass any custom consent that the signer needs to agree to before eSigning. This will be in addition to Leegality's standard signature specific consent. Maximum length of consent will be 500 characters."
+            "description" : "You can pass any custom consent that the signer needs to agree to before eSigning. This will be in addition to Leegality's standard signature specific consent. Maximum length of custom consent can be 500 characters."
           },
           "signatures" : {
             "type" : "array",
@@ -490,6 +633,10 @@
             "items" : {
               "$ref" : "#/components/schemas/SignatureType"
             }
+          },
+          "userLiveliness" : {
+            "type" : "boolean",
+            "description" : "Pass true if you want to capture liveliness of the signer."
           }
         }
       },
@@ -498,15 +645,15 @@
         "properties" : {
           "require" : {
             "type" : "boolean",
-            "description" : "Pass true, if you want are the signer to sign on behalf of an organisation."
+            "description" : "Pass true, if you want the signer to sign on behalf of an organisation."
           },
           "name" : {
             "type" : "string",
-            "description" : "Pass the name of the organisation on whose behalf the signer will be eSigning. In case, this value is not passed but the value of the require key above is true, then the signer will be asked to enter his organisation's name before signign."
+            "description" : "Pass the name of the organisation on whose behalf the signer will be eSigning. In case, this value is not passed but the value of the require key above is true, then the signer will be asked to enter his organisation's name before signing."
           },
           "sealType" : {
             "type" : "string",
-            "description" : "You can mandate the user to use an Organisational Seal while signing on behalf of an organisation. The seal will be made based on the signer's orgnisation name- either passed by you or entered by him. Use the following values-\nAUTHORIZED_SIGNATORY_SEAL- Authhorized Signatory Seal DIRECTOR_SEAL- Director Seal CUSTOM- Use this to ask the user to upload a image of the Seal"
+            "description" : "You can mandate the user to use an Organisational Seal while signing on behalf of an organisation. The seal will be made based on the signer's orgnisation name- either passed by you or entered by him. Use the following values-\nAUTHORIZED_SIGNATORY_SEAL- Authhorized Signatory Seal DIRECTOR_SEAL- Director Seal CUSTOM- Use this to ask the user to upload an image of the Seal"
           }
         }
       },
@@ -515,7 +662,7 @@
         "properties" : {
           "success" : {
             "type" : "string",
-            "description" : "If provided, we will make POST calls to this URL after successful signing by the signer with the data as descibed in webhookData model below."
+            "description" : "If provided, we will make POST calls to this URL after successful signing by the signer with the data as described in webhookData model below."
           },
           "failure" : {
             "type" : "string",
@@ -590,19 +737,20 @@
         }
       },
       "SignatureConfig" : {
+        "required" : [ "authTypes" ],
         "type" : "object",
         "properties" : {
           "authTypes" : {
             "type" : "array",
-            "description" : "This parameter works only with Aadhaar eSign. Accepted values are - OTP, BIO. Use OTP for OTP authentication, BIO for biometric authentication or both to allow the user to choose from OTP and Biometric while signing.",
-            "example" : [ "OTP", "BIO" ],
+            "description" : "This parameter works only with Aadhaar eSign. Accepted values are - OTP, BIO, IRIS. Use OTP for OTP authentication, BIO for biometric authentication, IRIS for iris authentication or all to allow the user to choose from OTP and Biometric and IRIS while signing.",
+            "example" : [ "OTP", "BIO", "IRIS" ],
             "items" : {
               "$ref" : "#/components/schemas/AuthenticationType"
             }
           },
           "verifyName" : {
             "type" : "boolean",
-            "description" : "Pass 'true' if you want  document to be generated only if the provided Name matches with the Name contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification.",
+            "description" : "Pass 'true' if you want the document to be generated only if the provided Name matches with the Name contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification.",
             "default" : false
           },
           "verifyPincode" : {
@@ -615,7 +763,7 @@
           },
           "verifyYob" : {
             "type" : "integer",
-            "description" : "Pass YEAR OF BIRTH in DIGITS if you want to verify the user's Year of Birth with the Year of Birth contained in the Digital Signature Certificate. This parameter will only function in case of Aadhaar eSign. The document will only be generated if the Year of Births match. In case the certificate does not have this value, this parameter will be ignored."
+            "description" : "Pass YEAR OF BIRTH in DIGITS if you want to verify the user's Year of Birth with the Year of Birth contained in the Digital Signature Certificate. This parameter will only function in case of an Aadhaar eSign. The document will only be generated if the Year of Birth matches. In case the certificate does not have this value, this parameter will be ignored."
           },
           "verifyGender" : {
             "type" : "string",
@@ -624,6 +772,15 @@
           "verifyTitle" : {
             "type" : "string",
             "description" : "Pass the last 4 digits of the UID No. if you want to verify the user's identity as contained in the Digital Signature Certificate. This paramater only works with Aadhaar eSign. The document will only be generated if both the values match. In case, the value is not present in the certificate, this parameter will be ignored."
+          },
+          "removeSignatureVerificationDocument" : {
+            "type" : "boolean",
+            "description" : "Pass 'true' if you want to remove the signature verification document. This parameter will only work for Virtual eSign.",
+            "default" : false
+          },
+          "signatureVerificationDocument" : {
+            "type" : "string",
+            "description" : "Pass the value of Signature verification document in Base64 format while creating a request. The same document will be used to verify signature against the signer's signature. This parameter works only with Virtual eSign. "
           },
           "id" : {
             "type" : "string",
@@ -772,6 +929,91 @@
           }
         }
       },
+      "WebhookDatav2.2" : {
+        "type" : "object",
+        "properties" : {
+          "documentId" : {
+            "type" : "string",
+            "description" : "Same as the documentId received in POST call."
+          },
+          "mac" : {
+            "type" : "string",
+            "description" : "The value of mac is calculated by applying HMAC-SHA1 algorithm on documentId with your Private Salt provided in your API Settings Tab. You can use it to ensure that the calls are coming from our servers."
+          },
+          "folderId" : {
+            "type" : "string",
+            "description" : "Folder ID of the document."
+          },
+          "irn" : {
+            "type" : "string",
+            "description" : "Internal Reference Number of the document."
+          },
+          "files" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "Base64 encoded string format of latest version of the document."
+            }
+          },
+          "auditTrail" : {
+            "type" : "string",
+            "description" : "Base64 encoded string format of the Audit Trail generated on completion of the document."
+          },
+          "signer" : {
+            "$ref" : "#/components/schemas/SignerUpdatedWebhook"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/WebhookRequest"
+          }
+        }
+      },
+      "WebhookDatav2.3" : {
+        "type" : "object",
+        "properties" : {
+          "documentId" : {
+            "type" : "string",
+            "description" : "Same as the documentId received in POST call."
+          },
+          "mac" : {
+            "type" : "string",
+            "description" : "The value of mac is calculated by applying HMAC-SHA1 algorithm on documentId with your Private Salt provided in your API Settings Tab. You can use it to ensure that the calls are coming from our servers."
+          },
+          "folderId" : {
+            "type" : "string",
+            "description" : "Folder ID of the document."
+          },
+          "irn" : {
+            "type" : "string",
+            "description" : "Internal Reference Number of the document."
+          },
+          "files" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "Base64 encoded string format of latest version of the document."
+            }
+          },
+          "auditTrail" : {
+            "type" : "string",
+            "description" : "Base64 encoded string format of the Audit Trail generated on completion of the document."
+          },
+          "signer" : {
+            "$ref" : "#/components/schemas/SignerUpdatedWebhook"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/WebhookRequest"
+          },
+          "verification" : {
+            "$ref" : "#/components/schemas/Verification"
+          },
+          "messages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Message"
+            }
+          }
+        }
+      },
       "ErrorWebhookData" : {
         "type" : "object",
         "properties" : {
@@ -793,6 +1035,42 @@
           },
           "request" : {
             "$ref" : "#/components/schemas/ErrorRequest"
+          }
+        }
+      },
+      "ErrorWebhookDatav2.3" : {
+        "type" : "object",
+        "properties" : {
+          "documentId" : {
+            "type" : "string",
+            "description" : "Same as the documentId received in POST call."
+          },
+          "mac" : {
+            "type" : "string",
+            "description" : "The value of mac is calculated by applying HMAC-SHA1 algorithm on documentId with your Private Salt provided in your API Settings Tab. You can use it to ensure that the calls are coming from our servers."
+          },
+          "folderId" : {
+            "type" : "string",
+            "description" : "Folder ID of the document."
+          },
+          "irn" : {
+            "type" : "string",
+            "description" : "Internal Reference Number of the document."
+          },
+          "signer" : {
+            "$ref" : "#/components/schemas/SignerUpdatedWebhook"
+          },
+          "request" : {
+            "$ref" : "#/components/schemas/ErrorRequest"
+          },
+          "verification" : {
+            "$ref" : "#/components/schemas/Verification"
+          },
+          "messages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Message"
+            }
           }
         }
       },
@@ -915,6 +1193,19 @@
           }
         }
       },
+      "Headers" : {
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "description" : "Pass this parameter value as you want the name of the key as a header."
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "Pass this parameter value as you want the value of the key as a header."
+          }
+        }
+      },
       "Signer" : {
         "type" : "object",
         "properties" : {
@@ -949,6 +1240,87 @@
           "uid" : {
             "type" : "string",
             "description" : "UIDToken of the signer as contained in the Digital Signature Certificate issued after Aadhaar authentication. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
+          }
+        }
+      },
+      "SignerUpdatedWebhook" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of signer as contained in the Digital Signature Certificate in case of Aadhaar, DSC, Doc Signer and Automated Signer. In case of Virtual Sign and Automated Virtual Sign, the name will be the name used for eSigning the document."
+          },
+          "pincode" : {
+            "type" : "string",
+            "description" : "PIN Code of signer as contained in the Digital Signature Certificate in case of Aadhaar, DSC, Doc Signer and Automated Signer. Value will be provided only if available in the certificate."
+          },
+          "state" : {
+            "type" : "string",
+            "description" : "State of signer as contained in the Digital Signature Certificate in case of Aadhaar, DSC, Doc Signer and Automated Signer. Value will be provided only if available in the certificate."
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Last 4 digit of the unique identifier of signer as contained in the Digital Signature Certificate issued after Aadhaar authentication. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
+          },
+          "yob" : {
+            "type" : "string",
+            "description" : "Year of birth of signer in digits as contained in the Digital Signature Certificate issued after Aadhaar authentication. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
+          },
+          "gender" : {
+            "type" : "string",
+            "description" : "Gender of the signer as contained in the Digital Signature Certificate issued after Aadhaar authentication. M for Male, F for Female and T for Transgender. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
+          },
+          "photoHash" : {
+            "type" : "string",
+            "description" : "SHA256 Hash of the photo of the signer in Base64 Format contained in the Digital Signature Certificate issued after Aadhaar authentication. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
+          },
+          "uid" : {
+            "type" : "string",
+            "description" : "UIDToken of the signer as contained in the Digital Signature Certificate issued after Aadhaar authentication. Only works for Aadhaar eSign. Value will be provided only if available in the Certificate."
+          },
+          "serialNumber" : {
+            "type" : "string",
+            "description" : "Serial number issued by the Certifying Authority on the digital signature. Value will be provided only if available in the Certificate."
+          }
+        }
+      },
+      "Verification" : {
+        "type" : "object",
+        "properties" : {
+          "smartName" : {
+            "maximum" : 100,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Smart Name value will indicate a value percentage of comparision between the name on the certificate and the name provided while signing. Value will be provided only if invitation is made using 'true' in verifySmartName and only in case of Aadhaar eSign or DSC.",
+            "default" : 50
+          },
+          "signature" : {
+            "type" : "string",
+            "description" : "This value will be returned in case of a virtual signature type. Signature will return a true or false depending on the whether the signature is matched to the signee's verification document."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "This parameter will return true or false depending on whether the Name is matched to the Digital Signing Certificate. It will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification."
+          },
+          "pincode" : {
+            "type" : "string",
+            "description" : "This parameter will return true or false depending on whether the Pincode is matched to the Digital Signing Certificate. It will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification."
+          },
+          "state" : {
+            "type" : "string",
+            "description" : "This parameter will return true or false depending on whether the State is matched to the Digital Signing Certificate. It will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification."
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "This parameter will return true or false depending on whether the Title is matched to the Digital Signing Certificate. It will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification."
+          },
+          "yob" : {
+            "type" : "string",
+            "description" : "This parameter will return true or false depending on whether the Year of Birth is matched to the Digital Signing Certificate. It will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification."
+          },
+          "gender" : {
+            "type" : "string",
+            "description" : "This parameter will return true or false depending on whether the Gender is matched to the Digital Signing Certificate. It will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification."
           }
         }
       },
@@ -1178,6 +1550,69 @@
           }
         }
       },
+      "UserAdditionAPI" : {
+        "required" : [ "email", "name", "role" ],
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "string",
+            "description" : "ID of the organisation."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the user."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Email address of the user."
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "Role of the user."
+          },
+          "department" : {
+            "type" : "string",
+            "description" : "Department of the user."
+          },
+          "autoActivation" : {
+            "type" : "boolean",
+            "description" : "Default value of this parameter is false. True will directly add the user to the organisation without notifying.",
+            "default" : false
+          }
+        }
+      },
+      "UserAdditionAPIResponse" : {
+        "type" : "object",
+        "properties" : {
+          "user" : {
+            "$ref" : "#/components/schemas/UserAdditionAPIResponseUser"
+          }
+        }
+      },
+      "UserAdditionAPIResponseUser" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "ID of the user."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Full name of the user."
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Email address of the user."
+          },
+          "department" : {
+            "$ref" : "#/components/schemas/UserAdditionAPIResponseUser_department"
+          },
+          "dateCreated" : {
+            "type" : "string",
+            "description" : "Date created."
+          }
+        }
+      },
       "RequestApiResponse_data" : {
         "type" : "object",
         "properties" : {
@@ -1287,6 +1722,19 @@
             "items" : {
               "$ref" : "#/components/schemas/WebhookRequest"
             }
+          }
+        }
+      },
+      "UserAdditionAPIResponseUser_department" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Organisation Department ID"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Organiation Department name"
           }
         }
       }
