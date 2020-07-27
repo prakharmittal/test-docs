@@ -356,6 +356,68 @@
           }
         }
       },
+      "AadhaarConfig" : {
+        "type" : "object",
+        "properties" : {
+          "verifyName" : {
+            "type" : "boolean",
+            "description" : "Pass 'true' if you want the document to be generated only if the provided Name matches with the Name contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification. If at the time of configuring the workflow in the Dashboard, this parameter is marked as mandatory,  then any value passed for this parameter in the API will be ignored.",
+            "default" : false
+          },
+          "verifySmartName" : {
+            "maximum" : 100,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Smart Name value will indicate a value percentage of comparision between the name on the certificate and the name provided while signing. Value will be provided only if invitation is made using 'true' in verifySmartName and only in case of Aadhaar eSign or DSC.\n If at the time of configuring the workflow in the Dashboard, this parameter is marked as mandatory,  then any value passed for this parameter in the API will be ignored.",
+            "default" : 50
+          },
+          "verifyPincode" : {
+            "type" : "string",
+            "description" : "Pass PINCODE if you want to verify the user's PIN Code with the PIN Code contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. The document will only be generated if the PIN Codes match. The parameter will be ignored if this field is not present in the Certificate. If at the time of configuring the workflow in the Dashboard, this parameter is turned off,  then any value passed for this parameter in the API will be ignored."
+          },
+          "verifyYob" : {
+            "type" : "integer",
+            "description" : "Pass YEAR OF BIRTH in DIGITS if you want to verify the user's Year of Birth with the Year of Birth contained in the Digital Signature Certificate. This parameter will only function in case of an Aadhaar eSign. The document will only be generated if the Year of Birth matches. In case the certificate does not have this value, this parameter will be ignored. Value should be between 1900 and the current year. If at the time of configuring the workflow in the Dashboard, this parameter is turned off,  then any value passed for this parameter in the API will be ignored."
+          },
+          "verifyTitle" : {
+            "type" : "string",
+            "description" : "Pass the last 4 digits of the UID No. if you want to verify the user's identity as contained in the Digital Signature Certificate. This paramater only works with Aadhaar eSign. The document will only be generated if both the values match. In case, the value is not present in the certificate, this parameter will be ignored. If at the time of configuring the workflow in the Dashboard, this parameter is turned off,  then any value passed for this parameter in the API will be ignored."
+          },
+          "verifyState" : {
+            "type" : "string",
+            "description" : "Pass value of State if you want to verify the user's State with the value of State contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. The document will only be generated if the values of States match.The parameter will be ignored if this field is not present in the Certificate. If at the time of configuring the workflow in the Dashboard, this parameter is turned off,  then any value passed for this parameter in the API will be ignored."
+          },
+          "verifyGender" : {
+            "type" : "string",
+            "description" : "Pass Gender value if you want to verify the user's Gender with the value contained in the Digital Signature Certificate issued.This parameter will only function in case of Aadhaar eSign. The document will only be generated if both the values match. Possible values are 'M' for Male, 'F' for Female and 'T' for Transgender. All values have to be in Capitals. In case the certificate does not have this value, the parameter will be ignored. If at the time of configuring the workflow in the Dashboard, this parameter is turned off,  then any value passed for this parameter in the API will be ignored."
+          }
+        }
+      },
+      "DscConfig" : {
+        "type" : "object",
+        "properties" : {
+          "verifyName" : {
+            "type" : "boolean",
+            "description" : "Pass 'true' if you want the document to be generated only if the provided Name matches with the Name contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification. If at the time of configuring the workflow in the Dashboard, this parameter is marked as mandatory,  then any value passed for this parameter in the API will be ignored.",
+            "default" : false
+          },
+          "verifySmartName" : {
+            "maximum" : 100,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Smart Name value will indicate a value percentage of comparision between the name on the certificate and the name provided while signing. Value will be provided only if invitation is made using 'true' in verifySmartName and only in case of Aadhaar eSign or DSC.\n If at the time of configuring the workflow in the Dashboard, this parameter is marked as mandatory,  then any value passed for this parameter in the API will be ignored.",
+            "default" : 50
+          },
+          "verifyPincode" : {
+            "type" : "string",
+            "description" : "Pass PINCODE if you want to verify the user's PIN Code with the PIN Code contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. The document will only be generated if the PIN Codes match. The parameter will be ignored if this field is not present in the Certificate. If at the time of configuring the workflow in the Dashboard, this parameter is turned off,  then any value passed for this parameter in the API will be ignored."
+          },
+          "verifyState" : {
+            "type" : "string",
+            "description" : "Pass value of State if you want to verify the user's State with the value of State contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. The document will only be generated if the values of States match.The parameter will be ignored if this field is not present in the Certificate. If at the time of configuring the workflow in the Dashboard, this parameter is turned off,  then any value passed for this parameter in the API will be ignored."
+          }
+        }
+      },
       "ReactivateRequest" : {
         "required" : [ "documentId" ],
         "type" : "object",
@@ -388,6 +450,12 @@
           "phone" : {
             "type" : "string",
             "description" : "Valid 10 digit mobile number of the invitee. Either email or phone is required."
+          },
+          "aadhaarConfig" : {
+            "$ref" : "#/components/schemas/AadhaarConfig"
+          },
+          "dscConfig" : {
+            "$ref" : "#/components/schemas/DscConfig"
           }
         }
       },
