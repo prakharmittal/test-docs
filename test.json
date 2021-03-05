@@ -320,7 +320,7 @@
           },
           "requestSignOrder": {
             "type": "boolean",
-            "description": "Pass 'false' if you want to activate all the signing invitations for a particular document instantly. By default, the invitations for subsequent users are only activated once all the previous invitations to that document are eSigned.",
+            "description": "Pass 'false' if you want to activate all the signing invitations for a particular document instantly. By default, the invitations for subsequent users are only activated once all the previous invitations to that document are eSigned. This will be mandatory in case you use and invitee as a approver transaction.",
             "default": true
           },
           "deleteOnComplete": {
@@ -529,6 +529,14 @@
           "userLiveliness": {
             "type": "boolean",
             "description": "Pass true if you want to capture liveliness of the signer."
+          },
+          "isApprover": {
+            "type": "boolean",
+            "description": "Pass true if you want to use this invitee as a approver transaction."
+          },
+          "recordApproverResponse": {
+            "type": "boolean",
+            "description": "Pass true if you want to record the approver transaction in audit trail. This will only work when you enable the invitee as a approver transaction."
           }
         }
       },
@@ -872,7 +880,7 @@
           },
           "signType": {
             "type": "string",
-            "description": "This parameter will be there only for Webhook when the document has been signed. Possible values are- AADHAAR, VIRTUAL_SIGN, DSC, DOC_SIGNER, AUTOMATED_SIGN"
+            "description": "This parameter will be there only for Webhook when the document has been signed. In case the transaction was of approver transaction than the value will be NULL. Possible values are- AADHAAR, VIRTUAL_SIGN, DSC, DOC_SIGNER, AUTOMATED_SIGN"
           }
         }
       },
@@ -1122,6 +1130,14 @@
             "items": {
               "$ref": "#/components/schemas/SignatureType"
             }
+          },
+          "isApprover": {
+            "type": "boolean",
+            "description": "Pass true if you want to use this invitee as a approver transaction."
+          },
+          "recordApproverResponse": {
+            "type": "boolean",
+            "description": "Pass true if you want to record the approver transaction in audit trail. This will only work when you enable the invitee as a approver transaction."
           }
         }
       },
