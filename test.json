@@ -537,6 +537,11 @@
           "recordApproverResponse": {
             "type": "boolean",
             "description": "Pass true if you want to record the approver transaction in audit trail. This will only work when you enable the invitee as a approver transaction."
+          },
+          "twoFactorAuthentication": {
+            "type": "boolean",
+            "description": "Pass true if you want to enable two factor authentication for the invitee.",
+            "default": false
           }
         }
       },
@@ -670,6 +675,11 @@
           "verifyName": {
             "type": "boolean",
             "description": "Pass 'true' if you want the document to be generated only if the provided Name matches with the Name contained in the Digital Signature Certificate. This parameter will only work for Aadhaar eSign or DSC. In case of mismatch, the transaction will be charged but the document will be rejected. Character case is ignored for verification.",
+            "default": false
+          },
+          "verifySmartName": {
+            "type": "boolean",
+            "description": "Pass 'true' if you want the document to be generated only if the provided Name matches with the Name contained in the Digital Signature Certificate to a certain percentage specified in the account. This parameter will only work for Aadhaar eSign or DSC. In case of the match perccentage being less than the saved value, the transaction will take the course saved in the account. Character case is ignored for verification.",
             "default": false
           },
           "verifyPincode": {
