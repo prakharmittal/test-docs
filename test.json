@@ -575,7 +575,7 @@
           },
           "version": {
             "type": "number",
-            "description": "If provided, we will make call to specific version of webhook data. Valid values are '2.1'.",
+            "description": "If provided, we will make call to specific version of webhook data. Valid values are '2.1', '2.2', '2.3'.",
             "default": 2.1
           }
         }
