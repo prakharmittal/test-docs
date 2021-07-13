@@ -181,12 +181,12 @@
           "eSigning Gateway"
         ],
         "summary": "Use this API to search",
-        "description": "You need to call this API with a custom Search Query to search your existing documents and invitations.",
+        "description": "You need to call this API with a custom Search Query to search your existing documents.",
         "parameters": [
           {
             "name": "q",
             "in": "query",
-            "description": "The search query with which you want to search your invitations or completed documents. The search is made in document names , documentIDs, Internal Reference Numbers, invitee names, invitee emails and phone numbers.",
+            "description": "The search query with which you want to search your invitations or completed documents. The search is made in document names , documentIDs and Internal Reference Numbers.",
             "required": false,
             "style": "form",
             "explode": true,
